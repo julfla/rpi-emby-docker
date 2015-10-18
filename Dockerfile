@@ -18,23 +18,25 @@ RUN apt-get update && apt-get install -y imagemagick \
 	mediainfo \
 	sqlite3
 
-# Get last ffmpeg version
-RUN sudo apt-get install -y git make && \
-	cd /usr/src && git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg
 
-RUN cd /usr/src/ffmpeg && ./configure && make && make && sudo make install
+
+# Get ffmpeg
+COPY ffmpeg.list /etc/apt/sources.list.d/
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5C808C2B65558117 && \
+apt-get update && apt-get install -y --force-yes ffmpeg
+
+
 
 # Get mono
 COPY mono-xamarin.list /etc/apt/sources.list.d/
-RUN apt-key adv --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF &&
-sudo apt-get update && sudo apt-get install -y mono-complete
+#RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+RUN apt-get update && apt-get install -y --force-yes mono-complete
+
+
 
 # Install emby and configure it to run with our configuration
-
 WORKDIR /opt/mediabrowser
 ADD https://github.com/MediaBrowser/Emby.Releases/raw/master/Server/MediaBrowser.Mono.zip .
-COPY ImageMagickSharp.dll.config .
-COPY System.Data.SQLite.dll.config .
-COPY MediaBrowser.MediaInfo.dll.config .
+COPY *.dll.config .
 
 CMD ["/bin/bash"]
