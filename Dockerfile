@@ -36,3 +36,5 @@ ADD https://github.com/MediaBrowser/Emby.Releases/raw/master/Server/MediaBrowser
 COPY ImageMagickSharp.dll.config .
 COPY System.Data.SQLite.dll.config .
 COPY MediaBrowser.MediaInfo.dll.config .
+
+CMD ["/bin/bash"]
